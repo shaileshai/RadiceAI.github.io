@@ -36,7 +36,7 @@ const relaxCspForDev = () => ({
 });
 
 export default defineConfig({
-  base: "/",
+  base: "/RadiceAI.github.io/",
   plugins: [relaxCspForDev()],
   build: {
     rollupOptions: {
