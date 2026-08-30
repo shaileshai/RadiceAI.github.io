@@ -54,7 +54,10 @@ jobs:
         run: |
           npm run chrome
           npm run seo
-          git diff --exit-code || {
+          # security.txt carries an Expires timestamp (now + 1 year) that
+          # regenerates on every run, so it can never be deterministic. Exclude
+          # it from the sync gate; every other generated file must match.
+          git diff --exit-code -- . ':(exclude)public/.well-known/security.txt' || {
             echo "::error::Generated files are out of date. Run 'npm run chrome && npm run seo' and commit."
             exit 1
           }
