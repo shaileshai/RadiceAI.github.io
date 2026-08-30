@@ -35,9 +35,31 @@ const relaxCspForDev = () => ({
     ),
 });
 
-export default defineConfig({
-  base: "/RadiceAI.github.io/",
-  plugins: [relaxCspForDev()],
+const pagesBase = "/RadiceAI.github.io/";
+
+// Prefix absolute nav/content hrefs for project Pages. Vite `base` only
+// rewrites asset URLs (js/css/fonts); every `href="/..."` nav link would
+// otherwise 404 at https://shaileshai.github.io/... instead of
+// https://shaileshai.github.io/RadiceAI.github.io/... . This runs only on
+// build so `npm run dev` at localhost still uses "/" and matches the
+// committed source files.
+const prefixHrefsForPages = () => ({
+  name: "radice:prefix-hrefs-for-pages",
+  apply: "build",
+  transformIndexHtml: (html) =>
+    html.replace(
+      // href="/..." or href='/...' or src="/..." — but not already prefixed,
+      // not protocol-relative //, not external http(s)://, not mailto:/tel:.
+      // Vite `base` already handles assets (js/css/fonts) but not nav/content
+      // hrefs like "/" or "/two-weeks/". Prefix those for project Pages.
+      /(href|src|action)=(["'])\/(?!RadiceAI\.github\.io\/|\/|https?:|mailto:|tel:)([^"']*)\2/g,
+      (_m, attr, q, rest) => `${attr}=${q}${pagesBase}${rest}${q}`,
+    ),
+});
+
+export default defineConfig(({ command }) => ({
+  base: command === "build" ? pagesBase : "/",
+  plugins: [relaxCspForDev(), prefixHrefsForPages()],
   build: {
     rollupOptions: {
       input: {
@@ -56,4 +78,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));
