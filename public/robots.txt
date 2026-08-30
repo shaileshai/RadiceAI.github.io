@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Marketing pages, meant to be read and quoted.
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://radiceai.github.io/sitemap.xml

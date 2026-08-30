@@ -1,0 +1,85 @@
+# Builds and publishes the site to GitHub Pages.
+#
+# This directory is the repository root. Everything above it — the strategy notes
+# in ../../Misc, the design specs in ../docs — is deliberately outside the repo,
+# because Pages needs a public repository on a free plan and a public repository
+# is a bad place for a market thesis.
+#
+# The repository must be named exactly <account>.github.io, matching ORIGIN in
+# src/config.js. A project repository would serve the site under /repo-name/,
+# and since Vite builds with base "/" and every link on the site is absolute
+# from the root, every page, asset and font would 404.
+#
+# `npm test` runs before the build, so a broken internal link or a headline that
+# no longer matches the spec fails the deploy rather than shipping. The pre-flight
+# check runs after the build and is advisory here — it blocks on the provider
+# identification being unfilled, which is a real launch blocker but should not
+# stop a preview deploy while incorporation is in progress. Remove
+# `continue-on-error` the day ENTITY is complete.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; let the newer one win.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+
+      # Regenerate the chrome and the crawler files, then fail if that produced a
+      # diff — it means someone edited a page's header by hand.
+      - name: Chrome and crawler files are in sync
+        run: |
+          npm run chrome
+          npm run seo
+          git diff --exit-code || {
+            echo "::error::Generated files are out of date. Run 'npm run chrome && npm run seo' and commit."
+            exit 1
+          }
+
+      - name: Design and link checks
+        run: npm test
+
+      - run: npm run build
+
+      - name: Pre-flight
+        run: npm run preflight
+        continue-on-error: true
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

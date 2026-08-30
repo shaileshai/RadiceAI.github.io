@@ -1,0 +1,1911 @@
+/*
+ * Fonts are served from this origin, never from Google. A page that fetches
+ * fonts.googleapis.com hands every visitor's IP address to a US server before
+ * they have consented to anything — LG München I, 3 O 17493/20 — which is both
+ * unlawful in the EU and the precise opposite of what this site is selling.
+ * The two files are variable, so one request per family covers every weight.
+ * Refresh them with `npm run fonts`.
+ */
+@font-face {
+  font-family: Geist;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/geist-variable.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/geist-mono-variable.woff2") format("woff2-variations");
+}
+
+:root {
+  --paper: #f4f4f2;
+  --paper-2: #eaebe8;
+  --ink: #0b0d12;
+  --ink-2: #4b5058;
+  /* Was #8b9099, which measured 2.91:1 on paper. The kickers are 11px content
+     labels, not decoration, so they need the full 4.5:1 — this reads 4.79:1. */
+  --ink-3: #666c78;
+  --navy-0: #05070e;
+  --navy-1: #0a1322;
+  /*
+   * Measured, not chosen by eye. #2f6bff gave 4.497:1 for white text on a filled
+   * button and 4.08:1 for a blue link on paper — both a hair under the 4.5:1 that
+   * /accessibility/ claims. This is the same blue two steps darker: 5.38:1 with
+   * white on it, 4.88:1 for it on paper.
+   */
+  --accent: #2860e6;
+  /*
+   * The same blue lifted for use on the dark bands, where --accent only manages
+   * 3.6:1. Reads 8.2:1 on the navy. Anywhere accent is used as *text* on dark,
+   * this is the one to reach for; --accent stays for rules, marks and fills.
+   */
+  --accent-lift: #7fa8ff;
+  --line: rgb(11 13 18 / 0.17);
+  --edge: rgb(11 13 18 / 0.12);
+  --pad: clamp(1.25rem, 4vw, 3.5rem);
+  --max: 88rem;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Mono for every uppercase label — it is what makes the register read as
+     instrumentation rather than marketing. */
+  --micro: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Geist, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------- the object ---------- */
+
+/*
+ * Layering: section backgrounds paint first, then the object, then the text.
+ * Nothing between body and the section content may create a stacking context
+ * or the object ends up on the wrong side of the copy.
+ */
+.field-wrap {
+  --peak: 0.7;
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: calc(var(--field-fade, 0) * var(--peak));
+  transform: scale(calc(0.96 + 0.04 * var(--field-fade, 0)));
+  transform-origin: 72% 50%;
+  transition: opacity 0.2s linear, transform 0.2s linear;
+}
+
+#field {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- blueprint bands ---------- */
+
+.band {
+  position: relative;
+}
+
+/* The masthead is fixed, so it would otherwise cover the top of a linked section. */
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+/*
+ * One visible focus ring for the whole site. :focus-visible rather than :focus,
+ * so a mouse click does not leave a ring behind but a Tab key always does.
+ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.band--dark :focus-visible,
+.hero :focus-visible,
+.page-head :focus-visible,
+.foot :focus-visible,
+.menu :focus-visible,
+.consent :focus-visible {
+  outline-color: #fff;
+}
+
+/* Off-screen until focused, then the first thing a keyboard reader lands on. */
+.skip {
+  position: fixed;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 90;
+  padding: 0.7rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: translateY(-160%);
+  transition: transform 0.25s var(--ease);
+}
+
+.skip:focus-visible {
+  transform: none;
+  outline-offset: 2px;
+}
+
+.band > .wrap {
+  position: relative;
+  z-index: 3;
+}
+
+/*
+ * Only the opening section shares its width with the object, so only its copy
+ * is held to a narrow column. Every section below it gets the whole page.
+ */
+.col {
+  width: 100%;
+}
+
+.hero .col,
+.page-head .col {
+  width: min(56%, 100%);
+}
+
+.band--rule {
+  border-top: 1px dashed var(--line);
+}
+
+.band--rule::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: calc((100% - min(var(--max), 100% - 2 * var(--pad))) / 2);
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.band--dark {
+  --line: rgb(255 255 255 / 0.13);
+  --edge: rgb(255 255 255 / 0.16);
+  background: var(--navy-0);
+  color: #fff;
+}
+
+.wrap {
+  width: min(var(--max), 100% - 2 * var(--pad));
+  margin-inline: auto;
+}
+
+/* ---------- type ---------- */
+
+.kicker {
+  margin: 0;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/*
+ * Anything dark-on-dark. The panel and the notice card carry their own dark
+ * background and can sit inside a paper band, so they have to be named here —
+ * inheriting --ink-3 there gave 3.8:1.
+ */
+.band--dark .kicker,
+.hero .kicker,
+.page-head .kicker,
+.panel .kicker,
+.notice .kicker,
+.foot .kicker {
+  color: rgb(255 255 255 / 0.66);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.display {
+  font-size: clamp(2.75rem, 6.4vw, 5.75rem);
+  line-height: 0.96;
+}
+
+.title {
+  font-size: clamp(2rem, 3.9vw, 3.5rem);
+  line-height: 1.02;
+}
+
+.sub {
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  line-height: 1.14;
+  letter-spacing: -0.022em;
+}
+
+p {
+  margin: 0;
+}
+
+/* One step above body copy, for the sentence directly under a display line. */
+.lede {
+  font-size: clamp(1.125rem, 1.55vw, 1.4rem);
+  line-height: 1.42;
+  letter-spacing: -0.012em;
+  max-width: 36rem;
+  color: var(--ink-2);
+}
+
+.body {
+  color: var(--ink-2);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  max-width: 34rem;
+  text-wrap: pretty;
+}
+
+.band--dark .body,
+.band--dark .lede,
+.hero .body,
+.hero .lede,
+.page-head .body,
+.page-head .lede {
+  color: rgb(255 255 255 / 0.78);
+}
+
+.hero .lede,
+.page-head .lede {
+  color: rgb(255 255 255 / 0.88);
+}
+
+/*
+ * A section head beside its own prose. Without this the copy stacks into one
+ * narrow column on the left and leaves half the band empty.
+ */
+.spread {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.75rem, 4vw, 4.5rem);
+  align-items: start;
+}
+
+.prose .body + .body {
+  margin-top: 1.15rem;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: stretch;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The consent banner and the briefing form use real <button>s, and the UA's own
+   button chrome otherwise shows as a grey box behind the inner span. */
+button.btn {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.btn span {
+  display: flex;
+  align-items: center;
+  padding: 0.78rem 1.05rem;
+  background: #fff;
+  color: var(--ink);
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+.btn i {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  background: var(--accent);
+  color: #fff;
+  transition: background 0.35s var(--ease);
+}
+
+.btn svg {
+  transition: transform 0.4s var(--ease);
+}
+
+.btn:hover span {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn:hover i {
+  background: #1d4fd0;
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+.btn--line span {
+  background: rgb(255 255 255 / 0.1);
+  color: #fff;
+  border: 1px solid rgb(255 255 255 / 0.28);
+}
+
+.btn--line:hover span {
+  background: #fff;
+  color: var(--ink);
+  border-color: #fff;
+}
+
+.btn--ink span {
+  background: var(--ink);
+  color: #fff;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.band--dark .link,
+.hero .link,
+.page-head .link {
+  color: var(--accent-lift);
+}
+
+.link svg {
+  transition: transform 0.4s var(--ease);
+}
+
+.link:hover svg {
+  transform: translateX(4px);
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  /* Same inner edge as .wrap, so the nav lines up with the copy below it. */
+  padding: 1.05rem max(var(--pad), calc((100% - var(--max)) / 2));
+  transition: background 0.45s var(--ease), padding 0.45s var(--ease);
+}
+
+/*
+ * One property drives every colour in the bar, so the two states that need ink
+ * on paper — scrolled, or a panel open over the dark hero — are one rule each
+ * rather than a colour override per element.
+ */
+.masthead {
+  --chrome-ink: #fff;
+}
+
+.scrolled .masthead,
+.masthead:has(.nav-item:hover),
+.masthead:has(.nav-item:focus-within) {
+  --chrome-ink: var(--ink);
+  background: rgb(244 244 242 / 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--edge);
+}
+
+/* Height only reacts to scroll — a panel opening must not move the bar. */
+.scrolled .masthead {
+  padding-block: 0.7rem;
+}
+
+/* An open panel is opaque paper, so the bar above it has to match exactly. */
+.masthead:has(.nav-item:hover),
+.masthead:has(.nav-item:focus-within) {
+  background: var(--paper);
+  backdrop-filter: none;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--chrome-ink, #fff);
+  transition: color 0.3s var(--ease);
+}
+
+.wordmark i {
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid currentColor;
+  position: relative;
+}
+
+.wordmark i::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: var(--accent);
+}
+
+/* ---------- nav and the panels ---------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2.15rem;
+  margin-left: auto;
+}
+
+.nav-item {
+  /* No positioning context here on purpose: the panel is positioned against
+     the masthead so it can span the full viewport width. */
+  padding-block: 1.15rem;
+  margin-block: -1.15rem;
+}
+
+.nav-top {
+  position: relative;
+  display: block;
+  padding-bottom: 2px;
+  color: var(--chrome-ink, #fff);
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.3s var(--ease);
+}
+
+.nav-top::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease);
+}
+
+.nav-item:hover .nav-top::after,
+.nav-item:focus-within .nav-top::after,
+.nav-item[data-owns] .nav-top::after {
+  transform: scaleX(1);
+}
+
+/*
+ * Accent blue on the dark hero is about 3.2:1 — legible on near-black, close to
+ * invisible where the gradient lightens. So the current item keeps the chrome's
+ * own colour and is marked by the underline alone; the blue only appears once the
+ * bar has gone to paper, where it has the contrast to earn it.
+ */
+.nav-item:hover .nav-top,
+.nav-item[data-owns] .nav-top {
+  color: var(--chrome-ink, #fff);
+}
+
+.scrolled .nav-item:hover .nav-top,
+.scrolled .nav-item[data-owns] .nav-top,
+.masthead:has(.nav-item:hover) .nav-item:hover .nav-top,
+.masthead:has(.nav-item:hover) .nav-item[data-owns] .nav-top,
+.masthead:has(.nav-item:focus-within) .nav-item:focus-within .nav-top,
+.masthead:has(.nav-item:focus-within) .nav-item[data-owns] .nav-top {
+  color: var(--accent);
+}
+
+.mega {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  background: var(--paper);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+  transform: translateY(-6px);
+  transition: opacity 0.24s var(--ease), transform 0.32s var(--ease),
+    visibility 0.24s;
+}
+
+/* Hover and focus-within both open it, so the panel needs no JS to work. */
+.nav-item:hover .mega,
+.nav-item:focus-within .mega {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Set by JS after a click inside the panel; cleared when the pointer leaves. */
+.nav-item[data-shut] .mega {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.mega-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 21rem;
+  gap: 3rem;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 2.4rem var(--pad) 2rem;
+}
+
+.mega-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.75rem;
+}
+
+.mega-label {
+  margin: 0 0 0.55rem;
+  font-family: var(--micro);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.mega-group a {
+  position: relative;
+  display: block;
+  padding: 0.72rem 0 0.72rem 1.1rem;
+  border-top: 1px dashed var(--line);
+}
+
+.mega-group a::before {
+  content: "";
+  position: absolute;
+  top: 1.16rem;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform 0.32s var(--ease);
+}
+
+.mega-group a:hover::before,
+.mega-group a[aria-current="page"]::before {
+  transform: scale(1);
+}
+
+.mega-group a b {
+  display: block;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  transition: color 0.25s var(--ease);
+}
+
+.mega-group a:hover b {
+  color: var(--accent);
+}
+
+.mega-group a span {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.mega-aside {
+  padding-left: 3rem;
+  border-left: 1px solid var(--line);
+}
+
+.mega-aside p:not(.mega-label) {
+  margin: 0 0 1.4rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.62rem 0.9rem;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.3s var(--ease);
+}
+
+.ask i {
+  display: grid;
+  place-items: center;
+}
+
+.ask svg {
+  transition: transform 0.4s var(--ease);
+}
+
+.ask:hover {
+  background: #1d4fd0;
+}
+
+.ask:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 7.5rem 0 2rem;
+  color: #fff;
+  --line: rgb(255 255 255 / 0.1);
+  background:
+    radial-gradient(120% 80% at 62% 78%, rgb(88 148 236 / 0.5) 0%, transparent 62%),
+    linear-gradient(180deg, #05070e 0%, #071125 34%, #16376e 72%, #3f76c0 100%);
+}
+
+.hero-copy {
+  margin-bottom: auto;
+}
+
+.hero .display {
+  margin-top: 1.1rem;
+  max-width: 13ch;
+}
+
+.hero .lede,
+.page-head .lede {
+  margin-top: 1.5rem;
+}
+
+.hero .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.hero-foot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
+  padding-top: 3rem;
+}
+
+.hero-note .kicker {
+  margin-bottom: 0.5rem;
+}
+
+.hero-note p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.86);
+  max-width: 24rem;
+}
+
+.notice {
+  position: relative;
+  width: min(24rem, 100%);
+  padding: 1rem 1.1rem;
+  background: rgb(4 8 18 / 0.5);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(8px);
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease);
+}
+
+.notice::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.notice:hover {
+  background: rgb(4 8 18 / 0.72);
+  border-color: rgb(255 255 255 / 0.32);
+}
+
+.notice-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.55rem;
+}
+
+.notice p {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.38;
+}
+
+.notice svg {
+  flex: none;
+  margin-bottom: 3px;
+  color: rgb(255 255 255 / 0.65);
+  transition: transform 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+.notice:hover svg {
+  transform: translateX(4px);
+  color: #fff;
+}
+
+/*
+ * The paper-band cousin of .notice: a bordered aside that sits in the flow of a
+ * document page rather than floating over the hero.
+ */
+.aside-note {
+  position: relative;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding: 1.3rem 1.5rem;
+  border: 1px solid var(--line);
+}
+
+.aside-note::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.aside-note p {
+  margin: 0;
+  max-width: 68ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.aside-note b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.band--dark .aside-note p {
+  color: rgb(255 255 255 / 0.7);
+}
+
+.band--dark .aside-note b {
+  color: #fff;
+}
+
+/* ---------- long-form document pages ---------- */
+
+/* Legal text needs inline links and code spans that the marketing pages never use. */
+.prose a,
+.ledger p a,
+.aside-note a,
+.panel-note a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.prose a,
+.ledger p a,
+.aside-note a {
+  color: var(--accent);
+}
+
+/* On the dark bands and the near-black panel, accent blue is under 4.5:1. */
+.band--dark .prose a,
+.band--dark .ledger p a,
+.band--dark .aside-note a,
+.panel-note a {
+  color: #fff;
+}
+
+code {
+  padding: 0.1em 0.35em;
+  font-family: var(--micro);
+  font-size: 0.875em;
+  background: rgb(11 13 18 / 0.06);
+}
+
+.band--dark code {
+  background: rgb(255 255 255 / 0.12);
+}
+
+/* Unfilled provider details on the legal notice. Visibly missing, not invented. */
+.tbd {
+  font-style: normal;
+  font-family: var(--micro);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b4331f;
+}
+
+.band--dark .tbd {
+  color: #ff9f8d;
+}
+
+/* ---------- section shells ---------- */
+
+.sec {
+  padding: clamp(4.5rem, 11vh, 8rem) 0;
+}
+
+.sec-head {
+  max-width: 32rem;
+}
+
+.sec-head .title {
+  margin-top: 0.9rem;
+}
+
+/* ---------- pillars ---------- */
+
+/*
+ * Dividers are borders on the cells, not gaps over a coloured container. With
+ * the container trick, a cell that has not revealed yet leaves a grey block.
+ */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-block: 1px solid var(--line);
+}
+
+.pillar {
+  padding: 1.7rem 1.6rem 2rem 0;
+}
+
+.pillar:not(:first-child) {
+  padding-left: 1.6rem;
+  border-left: 1px solid var(--line);
+}
+
+.pillar .sub {
+  margin: 0.9rem 0 0.85rem;
+}
+
+.pillar .body {
+  max-width: 26rem;
+}
+
+/* ---------- premise ---------- */
+
+/* Head, prose, and the specimen brief across the full band. */
+.premise {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.05fr) minmax(0, 1.1fr);
+  gap: clamp(1.5rem, 3.5vw, 4rem);
+  align-items: start;
+}
+
+/* ---------- brief panel ---------- */
+
+.panel {
+  background: var(--navy-0);
+  color: #fff;
+  padding: 1.6rem;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.panel-row {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  gap: 0.9rem;
+  align-items: baseline;
+  padding: 0.9rem 0;
+  border-bottom: 1px dashed rgb(255 255 255 / 0.14);
+  font-size: 1rem;
+}
+
+.panel-row b {
+  font-weight: 400;
+}
+
+.panel-row span:first-child,
+.panel-row i {
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.panel-row span:first-child {
+  /* 0.4 measured at 3.74:1 on the panel; these are 11px, so they need 4.5. */
+  color: rgb(255 255 255 / 0.62);
+}
+
+.panel-row i {
+  color: #7fa8ff;
+}
+
+.panel-note {
+  padding-top: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: rgb(255 255 255 / 0.55);
+}
+
+/* ---------- numbered points ---------- */
+
+.points {
+  display: grid;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-block: 1px solid var(--line);
+}
+
+.point {
+  padding: 1.5rem 1.5rem 1.7rem 0;
+}
+
+.point:not(:first-child) {
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--line);
+}
+
+.point b {
+  display: inline-block;
+  padding: 0.2rem 0.45rem;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.band--dark .point b {
+  background: var(--accent);
+}
+
+.point p {
+  margin-top: 0.9rem;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+}
+
+.points--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ---------- propositions ---------- */
+
+.props {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-top: 1px dashed var(--line);
+}
+
+/* Label, thesis, and explanation as three columns of one full-width row. */
+.prop {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: clamp(1rem, 3vw, 3.5rem);
+  align-items: baseline;
+  padding: 2.2rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.prop .sub {
+  transition: color 0.4s var(--ease);
+}
+
+.prop:hover .sub {
+  color: var(--accent);
+}
+
+/* ---------- doors ---------- */
+
+.doors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-block: 1px solid var(--line);
+}
+
+.door {
+  position: relative;
+  display: block;
+  padding: 2.1rem 2rem 1.9rem;
+  overflow: hidden;
+}
+
+.door + .door {
+  border-left: 1px solid var(--line);
+}
+
+.door .body {
+  max-width: 30rem;
+}
+
+.door::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.55s var(--ease);
+}
+
+.door:hover::before {
+  transform: scaleY(1);
+}
+
+.door .sub {
+  margin: 0.8rem 0 0.7rem;
+}
+
+.door .link {
+  margin-top: 1.5rem;
+}
+
+/* ---------- ledger ---------- */
+
+/*
+ * Full-width rows. The trailing counter is what makes the width deliberate —
+ * without something anchored right, a two-column row just trails off.
+ */
+.ledger {
+  counter-reset: led;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-top: 1px dashed var(--line);
+}
+
+.ledger div {
+  display: grid;
+  grid-template-columns: 13rem minmax(0, 1fr) 2.5rem;
+  gap: clamp(1rem, 3vw, 3.5rem);
+  align-items: baseline;
+  padding: 1.5rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.ledger div::after {
+  counter-increment: led;
+  content: counter(led, decimal-leading-zero);
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  color: var(--ink-3);
+}
+
+.band--dark .ledger div::after {
+  color: rgb(255 255 255 / 0.35);
+}
+
+.ledger b {
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ledger p {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 52rem;
+  color: var(--ink-2);
+}
+
+.band--dark .ledger p {
+  color: rgb(255 255 255 / 0.7);
+}
+
+/* ---------- inner page head ---------- */
+
+/* Tall enough to hold the object, which is centred on the viewport. */
+.page-head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 78svh;
+  padding: 8rem 0 4rem;
+  color: #fff;
+  --line: rgb(255 255 255 / 0.1);
+  background:
+    radial-gradient(110% 95% at 68% 100%, rgb(88 148 236 / 0.4) 0%, transparent 62%),
+    linear-gradient(180deg, #05070e 0%, #0a1526 38%, #163870 82%, #2b5da0 100%);
+}
+
+.page-head .display {
+  margin-top: 1rem;
+  max-width: 14ch;
+}
+
+.page-head .body {
+  margin-top: 1.6rem;
+}
+
+/* ---------- fortnight ---------- */
+
+/* Three moves, so three columns. Adding a fourth means changing this grid. */
+.days {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  padding: 0;
+  border-block: 1px solid var(--line);
+}
+
+.days li {
+  padding: 1.5rem 1.5rem 1.8rem 0;
+}
+
+.days li:not(:first-child) {
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--line);
+}
+
+.days b {
+  display: block;
+  margin-bottom: 0.9rem;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.days span {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.band--dark .days span {
+  color: rgb(255 255 255 / 0.7);
+}
+
+/* ---------- closing ---------- */
+
+.close-cta {
+  padding: clamp(5rem, 13vh, 9rem) 0;
+  text-align: left;
+}
+
+/* The top margin was an inline style attribute on twelve pages, which a strict
+   style-src blocks. Same result, one rule, no 'unsafe-inline'. */
+.close-cta .display {
+  max-width: 22ch;
+  margin-top: 1rem;
+  margin-bottom: 2.2rem;
+}
+
+/* ---------- footer ---------- */
+
+.foot {
+  position: relative;
+  z-index: 4;
+  background: var(--navy-0);
+  color: #fff;
+  --line: rgb(255 255 255 / 0.14);
+  padding-bottom: 2.2rem;
+}
+
+/* The claim and the one action, above the grid rather than inside it. */
+.foot-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2.5rem;
+  padding: clamp(3.25rem, 6vw, 5rem) 0 clamp(2.5rem, 4vw, 3.5rem);
+}
+
+.foot-claim {
+  margin: 1.2rem 0 0;
+  max-width: 26rem;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.62);
+}
+
+.foot-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px dashed var(--line);
+}
+
+/* Same corner marker every other band gets. */
+.foot-grid::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.foot-col {
+  padding: 2rem 1.9rem 1rem;
+}
+
+.foot-col:first-child {
+  padding-left: 0;
+}
+
+.foot-col + .foot-col {
+  border-left: 1px solid var(--line);
+}
+
+.foot h4 {
+  margin: 0 0 1.15rem;
+  font-family: var(--micro);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  /* 0.42 measured at 4.02:1 on this band. These are 10px labels, so they need 4.5. */
+  color: rgb(255 255 255 / 0.66);
+}
+
+.foot-col a {
+  display: block;
+  padding: 0.28rem 0;
+  font-size: 1rem;
+  color: rgb(255 255 255 / 0.76);
+  transition: color 0.28s var(--ease), transform 0.28s var(--ease);
+}
+
+.foot-col a:hover {
+  color: #fff;
+  transform: translateX(3px);
+}
+
+/* Colour only — a nudged link in a static list just reads as misalignment. */
+.foot-col a[aria-current="page"] {
+  color: #fff;
+}
+
+/*
+ * The fourth column is statements, not links. Padding a link grid with pages we
+ * have not written is the habit this site exists to argue against.
+ */
+.foot-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 1.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Four narrow columns leave a single orphan word on the second line of the longer
+   facts; balance splits them evenly instead. */
+.foot-facts li {
+  position: relative;
+  padding: 0 0 0.28rem 0.95rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.55);
+  text-wrap: balance;
+}
+
+.foot-facts li::before {
+  content: "";
+  position: absolute;
+  top: 0.54rem;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  background: rgb(255 255 255 / 0.3);
+}
+
+/* Four link columns plus the facts would be five across and too tight, so the
+   statements get their own full-width row under the grid. */
+.foot-runs {
+  display: grid;
+  grid-template-columns: 13rem minmax(0, 1fr);
+  gap: 0 1.9rem;
+  align-items: start;
+  padding-top: 1.8rem;
+  border-top: 1px dashed var(--line);
+}
+
+.foot-runs h4 {
+  margin: 0;
+}
+
+.foot-end {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  margin-top: 2.4rem;
+  padding-top: 1.3rem;
+  border-top: 1px dashed var(--line);
+  font-family: var(--micro);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  /* 0.42 measured at 3.7:1 on this band, which is under AA for 10px text. */
+  color: rgb(255 255 255 / 0.66);
+}
+
+.foot-end a {
+  color: rgb(255 255 255 / 0.86);
+  transition: color 0.28s var(--ease);
+}
+
+.foot-end a:hover {
+  color: var(--accent);
+}
+
+/* ---------- consent ---------- */
+
+/*
+ * Sits at the bottom, does not cover the page, and is not a modal — nothing
+ * here is urgent enough to trap the reader. Accept and Decline are the same
+ * size and weight on purpose: under the ePrivacy rules a refusal has to be as
+ * easy as an agreement, and a greyed-out "manage preferences" link is not that.
+ */
+.consent {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 70;
+  background: var(--navy-0);
+  color: #fff;
+  --line: rgb(255 255 255 / 0.16);
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform 0.5s var(--ease), visibility 0.5s;
+}
+
+.consent--on {
+  transform: none;
+  visibility: visible;
+}
+
+.consent-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: center;
+  width: min(var(--max), 100% - 2 * var(--pad));
+  margin-inline: auto;
+  padding: 1.5rem 0;
+}
+
+.consent p:not(.mega-label) {
+  margin: 0.5rem 0 0;
+  max-width: 62ch;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.consent .mega-label {
+  color: rgb(255 255 255 / 0.45);
+}
+
+.consent a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.consent-acts {
+  display: flex;
+  gap: 0.6rem;
+}
+
+/* ---------- form ---------- */
+
+.form-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem 1.6rem;
+  border-top: 1px dashed var(--line);
+  padding-top: 1.9rem;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--micro);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  /* --ink-3 measured at 2.91:1. A form label is not decoration; it needs to be read. */
+  color: var(--ink-2);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.72rem 0.85rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.field textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+/* Only after a submit attempt, so the form is not red before it is used. */
+.form[data-checked] :invalid {
+  border-color: #b4331f;
+}
+
+.field-note {
+  margin: 0.55rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.form-acts {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.form-status {
+  margin: 0;
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---------- mobile menu ---------- */
+
+.menu-btn {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border: 0;
+  background: rgb(255 255 255 / 0.9);
+  color: var(--ink);
+  font-family: var(--micro);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.menu-btn .bars {
+  position: relative;
+  width: 13px;
+  height: 9px;
+}
+
+.menu-btn .bars i {
+  position: absolute;
+  left: 0;
+  width: 13px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.4s var(--ease);
+}
+
+.menu-btn .bars i:first-child { top: 1px; }
+.menu-btn .bars i:last-child { top: 6px; }
+
+.menu-open .menu-btn .bars i:first-child { transform: translateY(2.5px) rotate(45deg); }
+.menu-open .menu-btn .bars i:last-child { transform: translateY(-2.5px) rotate(-45deg); }
+
+/*
+ * There is no room for panels on a phone, so the same three groups are simply
+ * printed out in full and the sheet scrolls. An accordion here would hide real
+ * destinations behind a second tap for no gain.
+ */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 5.5rem var(--pad) 3rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--navy-0);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--ease), visibility 0.4s;
+}
+
+.menu-open .menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.menu-nav section {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px dashed rgb(255 255 255 / 0.18);
+}
+
+.menu-nav .mega-label {
+  margin: 0.85rem 0 0.35rem;
+  color: rgb(255 255 255 / 0.45);
+}
+
+.menu-nav a {
+  padding: 0.62rem 0;
+  color: #fff;
+  font-size: clamp(1.25rem, 5.5vw, 1.6rem);
+  letter-spacing: -0.025em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.45s var(--ease), transform 0.55s var(--ease);
+}
+
+.menu-nav a[aria-current="page"] {
+  color: var(--accent);
+}
+
+.menu-open .menu-nav a {
+  opacity: 1;
+  transform: none;
+}
+
+.menu-nav section:nth-of-type(1) a { transition-delay: 0.05s; }
+.menu-nav section:nth-of-type(2) a { transition-delay: 0.12s; }
+.menu-nav section:nth-of-type(3) a { transition-delay: 0.19s; }
+
+.menu .btn {
+  align-self: flex-start;
+}
+
+.menu-open {
+  overflow: hidden;
+}
+
+/* ---------- motion ---------- */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.js [data-reveal].in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.8s var(--ease) calc(var(--d, 0) * 65ms),
+    transform 0.9s var(--ease) calc(var(--d, 0) * 65ms);
+}
+
+.js main {
+  transition: opacity 0.26s ease;
+}
+
+.js main.leaving {
+  opacity: 0;
+}
+
+/* ---------- responsive ---------- */
+
+/* Three-across grids survive down to here; the spreads give up sooner. */
+@media (max-width: 1180px) {
+  .spread {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
+  .premise {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .premise > .sec-head {
+    grid-column: 1 / -1;
+  }
+
+  .prop {
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    row-gap: 0.7rem;
+  }
+
+  .prop .body {
+    grid-column: 2;
+  }
+
+  /* Keep the four columns; take the room out of the gutters instead. Dropping
+     to two leaves each one stranded in half a band of empty space. */
+  .foot-col {
+    padding: 1.9rem 1.15rem 1.1rem;
+  }
+
+  .foot-col:first-child {
+    padding-left: 0;
+  }
+
+  .form-wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Below this the panel aside has nowhere to sit without squeezing the links. */
+@media (max-width: 1040px) {
+  .nav {
+    gap: 1.5rem;
+  }
+
+  .mega-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .mega-aside {
+    display: none;
+  }
+
+  .foot-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 0.3rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .hero .col,
+  .page-head .col {
+    width: 100%;
+  }
+
+  .field-wrap {
+    --peak: 0.4;
+    transform-origin: 50% 60%;
+  }
+}
+
+@media (max-width: 900px) {
+  .masthead > nav,
+  .masthead .ask {
+    display: none;
+  }
+
+  .menu-btn {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .premise,
+  .prop,
+  .doors,
+  .pillars,
+  .points--3,
+  .days,
+  .foot-grid,
+  .ledger div {
+    grid-template-columns: 1fr;
+  }
+
+  .prop .body {
+    grid-column: 1;
+  }
+
+  .ledger div::after {
+    display: none;
+  }
+
+  .pillar,
+  .point,
+  .days li {
+    padding: 1.4rem 0 1.6rem;
+  }
+
+  .pillar:not(:first-child),
+  .point:not(:first-child),
+  .days li:not(:first-child) {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .door {
+    padding: 1.8rem 1.4rem 1.6rem;
+  }
+
+  .door + .door {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .hero {
+    padding-top: 6.5rem;
+  }
+
+  .hero-foot {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .foot-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .foot-runs {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+
+  .foot-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .consent-inner {
+    grid-template-columns: 1fr;
+    gap: 1.3rem;
+    padding: 1.3rem 0;
+  }
+
+  .consent-acts .btn {
+    flex: 1;
+  }
+
+  .consent-acts .btn span {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .foot-col {
+    padding: 1.6rem 0 1.1rem;
+  }
+
+  .foot-col:not(:first-child) {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .foot-end {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-head {
+    padding-top: 8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .field-wrap {
+    display: none;
+  }
+
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

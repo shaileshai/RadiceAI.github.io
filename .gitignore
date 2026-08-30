@@ -1,0 +1,25 @@
+# This directory is the repository root, so this file is the only thing standing
+# between 426 MB of node_modules and the published history. The strategy PDFs and
+# working notes live in the parent directory on purpose, outside the repository
+# altogether — that is a boundary, not an omission, and it is why this repo can be
+# public without publishing the business.
+
+node_modules/
+dist/
+
+# Build scratch: screenshots from preview.mjs and the design passes.
+.preview/
+.build/
+/tmp-shots/
+
+.DS_Store
+*.log
+npm-debug.log*
+
+# Never commit these. If a key or a client name lands here it is in history for
+# good, and rewriting published history is not a fix anyone believes.
+.env
+.env.*
+!.env.example
+*.pem
+*.key

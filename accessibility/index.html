@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- chrome:meta -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self' mailto:; frame-src 'none'; worker-src 'self' blob:; manifest-src 'self'" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>Accessibility — Radice</title>
+    <meta name="description" content="How this site is built for keyboard, screen reader and reduced motion, what is known to fall short, and how to report a barrier." />
+    <link rel="canonical" href="https://radiceai.github.io/accessibility/" />
+    <meta name="theme-color" content="#05070e" />
+    <meta name="color-scheme" content="light dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Radice" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:title" content="Accessibility — Radice" />
+    <meta property="og:description" content="How this site is built for keyboard, screen reader and reduced motion, what is known to fall short, and how to report a barrier." />
+    <meta property="og:url" content="https://radiceai.github.io/accessibility/" />
+    <meta property="og:image" content="https://radiceai.github.io/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Radice — own your intelligence" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Accessibility — Radice" />
+    <meta name="twitter:description" content="How this site is built for keyboard, screen reader and reduced motion, what is known to fall short, and how to report a barrier." />
+    <meta name="twitter:image" content="https://radiceai.github.io/og.png" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Self-hosted. Nothing here may point at a font CDN. -->
+    <link rel="preload" href="/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist-mono-variable.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Radice",
+        "url": "https://radiceai.github.io/",
+        "description": "Sovereign AI for professional firms and the state. Small language models deployed inside a boundary the client already controls.",
+        "email": "shailesh.tripathi003@gmail.com"
+      }
+    </script>
+    <!-- /chrome:meta -->
+  </head>
+  <body data-page="accessibility">
+    <div class="field-wrap" aria-hidden="true"><canvas id="field"></canvas></div>
+
+    <!-- chrome:head -->
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="masthead">
+      <a class="wordmark" href="/"><i></i>Radice</a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-item">
+          <a class="nav-top" href="/two-weeks/">The offer</a>
+          <div class="mega" id="mega-the-offer">
+            <div class="mega-inner">
+              <div class="mega-cols">
+                <div class="mega-group">
+                  <p class="mega-label">Fourteen days</p>
+                  <a href="/two-weeks/">
+                    <b>Two weeks</b>
+                    <span>A diagnosis inside the real workflow</span>
+                  </a>
+                  <a href="/two-weeks/#fortnight">
+                    <b>The fortnight</b>
+                    <span>Three moves, in the order that matters</span>
+                  </a>
+                  <a href="/two-weeks/#terms">
+                    <b>Terms</b>
+                    <span>Nothing is installed until you say so</span>
+                  </a>
+                </div>
+                <div class="mega-group">
+                  <p class="mega-label">What remains</p>
+                  <a href="/kit/">
+                    <b>The kit</b>
+                    <span>What stays in the building afterwards</span>
+                  </a>
+                  <a href="/kit/#stack">
+                    <b>The stack</b>
+                    <span>What is actually installed</span>
+                  </a>
+                  <a href="/kit/#limits">
+                    <b>Limits</b>
+                    <span>What the kit is not</span>
+                  </a>
+                </div>
+              </div>
+              <aside class="mega-aside">
+                <p class="mega-label">Day 14</p>
+                <p>A written map of where the files live, and a price to leave the kit running.</p>
+                <a class="link" href="/contact/">Request a briefing <svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></a>
+              </aside>
+            </div>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a class="nav-top" href="/law/">Who it's for</a>
+          <div class="mega" id="mega-who-it-s-for">
+            <div class="mega-inner">
+              <div class="mega-cols">
+                <div class="mega-group">
+                  <p class="mega-label">Professional firms</p>
+                  <a href="/law/">
+                    <b>Law firms</b>
+                    <span>Privilege as a wall, not a setting</span>
+                  </a>
+                  <a href="/law/#shape">
+                    <b>The shape</b>
+                    <span>Matter files instead of client books</span>
+                  </a>
+                  <a href="/#missions">
+                    <b>Missions</b>
+                    <span>Four places the same stack earns its keep</span>
+                  </a>
+                </div>
+                <div class="mega-group">
+                  <p class="mega-label">The state</p>
+                  <a href="/institutions/">
+                    <b>Institutions</b>
+                    <span>A ministry is a data problem too</span>
+                  </a>
+                  <a href="/institutions/#position">
+                    <b>Position</b>
+                    <span>A briefing, not a buy button</span>
+                  </a>
+                  <a href="/#doors">
+                    <b>Two doors</b>
+                    <span>Same engineering, different procurement</span>
+                  </a>
+                </div>
+              </div>
+              <aside class="mega-aside">
+                <p class="mega-label">Order</p>
+                <p>Accountancy practices first, then law firms. Authorities on their own timetable.</p>
+                <a class="link" href="/#what-you-own">What you own <svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></a>
+              </aside>
+            </div>
+          </div>
+        </div>
+        <div class="nav-item" data-owns>
+          <a class="nav-top" href="/how-we-work/">Trust</a>
+          <div class="mega" id="mega-trust">
+            <div class="mega-inner">
+              <div class="mega-cols">
+                <div class="mega-group">
+                  <p class="mega-label">What you can hold us to</p>
+                  <a href="/how-we-work/">
+                    <b>How we work</b>
+                    <span>Where a file goes, and where it does not</span>
+                  </a>
+                  <a href="/how-we-work/#undertakings">
+                    <b>The undertakings</b>
+                    <span>Six lines, no asterisks</span>
+                  </a>
+                  <a href="/#premise">
+                    <b>The premise</b>
+                    <span>Why the boundary is drawn first</span>
+                  </a>
+                </div>
+                <div class="mega-group">
+                  <p class="mega-label">This site</p>
+                  <a href="/how-we-work/#this-site">
+                    <b>How it is built</b>
+                    <span>Static pages, self-hosted fonts</span>
+                  </a>
+                  <a href="/privacy/">
+                    <b>Privacy and cookies</b>
+                    <span>What is collected, and where it is served</span>
+                  </a>
+                  <a href="/accessibility/" aria-current="page">
+                    <b>Accessibility</b>
+                    <span>Keyboard, screen reader, reduced motion</span>
+                  </a>
+                </div>
+              </div>
+              <aside class="mega-aside">
+                <p class="mega-label">No form vendor</p>
+                <p>A briefing travels through your own mail client to a published address. Nothing else is collected.</p>
+                <a class="link" href="/how-we-work/#this-site">Read the detail <svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></a>
+              </aside>
+            </div>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a class="nav-top" href="/about/">Company</a>
+          <div class="mega" id="mega-company">
+            <div class="mega-inner">
+              <div class="mega-cols">
+                <div class="mega-group">
+                  <p class="mega-label">The firm</p>
+                  <a href="/about/">
+                    <b>About</b>
+                    <span>What we are, and the argument we are built on</span>
+                  </a>
+                  <a href="/about/#order">
+                    <b>The order</b>
+                    <span>Why accountancy comes before everything else</span>
+                  </a>
+                  <a href="/contact/">
+                    <b>Contact</b>
+                    <span>Tell us what the next painful week looks like</span>
+                  </a>
+                </div>
+                <div class="mega-group">
+                  <p class="mega-label">Legal</p>
+                  <a href="/legal/">
+                    <b>Legal notice</b>
+                    <span>Who publishes this site, and the terms of use</span>
+                  </a>
+                  <a href="/privacy/">
+                    <b>Privacy and cookies</b>
+                    <span>GDPR notice, in plain sentences</span>
+                  </a>
+                  <a href="/accessibility/" aria-current="page">
+                    <b>Accessibility</b>
+                    <span>Statement and known shortfalls</span>
+                  </a>
+                </div>
+              </div>
+              <aside class="mega-aside">
+                <p class="mega-label">Who publishes this</p>
+                <p>The operator, the terms of use, and where to send a security report.</p>
+                <a class="link" href="/legal/">Legal notice <svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></a>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <a class="ask" href="/contact/">
+        <span>Briefing</span>
+        <i><svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></i>
+      </a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="bars" aria-hidden="true"><i></i><i></i></span>
+        <span class="menu-label">Menu</span>
+      </button>
+    </header>
+
+    <div class="menu" id="menu">
+      <nav class="menu-nav" aria-label="Menu">
+        <section>
+          <p class="mega-label">The offer</p>
+          <a href="/two-weeks/">Two weeks</a>
+          <a href="/two-weeks/#fortnight">The fortnight</a>
+          <a href="/two-weeks/#terms">Terms</a>
+          <a href="/kit/">The kit</a>
+          <a href="/kit/#stack">The stack</a>
+          <a href="/kit/#limits">Limits</a>
+        </section>
+        <section>
+          <p class="mega-label">Who it's for</p>
+          <a href="/law/">Law firms</a>
+          <a href="/law/#shape">The shape</a>
+          <a href="/#missions">Missions</a>
+          <a href="/institutions/">Institutions</a>
+          <a href="/institutions/#position">Position</a>
+          <a href="/#doors">Two doors</a>
+        </section>
+        <section>
+          <p class="mega-label">Trust</p>
+          <a href="/how-we-work/">How we work</a>
+          <a href="/how-we-work/#undertakings">The undertakings</a>
+          <a href="/#premise">The premise</a>
+          <a href="/how-we-work/#this-site">How it is built</a>
+          <a href="/privacy/">Privacy and cookies</a>
+          <a href="/accessibility/" aria-current="page">Accessibility</a>
+        </section>
+        <section>
+          <p class="mega-label">Company</p>
+          <a href="/about/">About</a>
+          <a href="/about/#order">The order</a>
+          <a href="/contact/">Contact</a>
+          <a href="/legal/">Legal notice</a>
+          <a href="/privacy/">Privacy and cookies</a>
+          <a href="/accessibility/" aria-current="page">Accessibility</a>
+        </section>
+      </nav>
+      <a class="btn" href="/contact/">
+        <span>Request a briefing</span>
+        <i><svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></i>
+      </a>
+    </div>
+    <!-- /chrome:head -->
+
+    <main id="main" tabindex="-1">
+      <section class="page-head band">
+        <div class="wrap">
+          <div class="col">
+            <p class="kicker" data-reveal>Accessibility</p>
+            <h1 class="display" data-reveal>Built to be read by anything.</h1>
+            <p class="lede" data-reveal>
+              We sell to public bodies, which means this statement is not decoration. Here is
+              what the site does, what it is measured against, and what we know still falls
+              short.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="band sec" id="standard">
+        <div class="wrap">
+          <div class="col">
+            <div class="spread">
+              <div class="sec-head">
+                <p class="kicker" data-reveal>Standard</p>
+                <h2 class="title" data-reveal>WCAG 2.2 AA, self-assessed.</h2>
+              </div>
+              <div class="prose">
+                <p class="body" data-reveal>
+                  We target WCAG 2.2 level AA, which is the technical basis of EN 301 549 and
+                  of the European Accessibility Act. We believe the site substantially
+                  conforms.
+                </p>
+                <p class="body" data-reveal>
+                  <b>It has not been independently audited.</b> That sentence is the honest
+                  status and it stays here until an audit exists, at which point this page
+                  will name who did it and when. Parts of the assessment are mechanical —
+                  contrast is measured on every element of every page by a script that fails
+                  the build — but a machine cannot tell you whether a page makes sense to
+                  someone using a screen reader. That part is still just us.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band band--dark sec" id="done">
+        <div class="wrap">
+          <div class="col">
+            <div class="spread">
+              <div class="sec-head">
+                <p class="kicker" data-reveal>What is done</p>
+                <h2 class="title" data-reveal>Keyboard first, motion optional.</h2>
+              </div>
+              <div class="prose">
+                <p class="body" data-reveal>
+                  The site is a set of static documents with progressive enhancement on top.
+                  Turn off JavaScript and every page still renders, navigates and reads
+                  correctly — including the nav panels, which open on focus in CSS alone.
+                </p>
+              </div>
+            </div>
+            <div class="ledger">
+              <div data-reveal>
+                <b>Keyboard</b>
+                <p>Every control is reachable and operable by keyboard in a logical order, and focus is visible. The nav panels open on focus, so their links are reachable without a pointer.</p>
+              </div>
+              <div data-reveal>
+                <b>Reduced motion</b>
+                <p>With <code>prefers-reduced-motion</code> set, the animated object is removed entirely, scroll reveals are off, and page transitions become ordinary page loads. No content depends on motion.</p>
+              </div>
+              <div data-reveal>
+                <b>Without JavaScript</b>
+                <p>All eleven pages are plain HTML documents. Navigation, the nav panels and the whole of the text work with scripting disabled.</p>
+              </div>
+              <div data-reveal>
+                <b>Structure</b>
+                <p>One <code>h1</code> per page, headings in order, real landmarks, and lists that are lists. The decorative object is a canvas marked <code>aria-hidden</code> and carries no information.</p>
+              </div>
+              <div data-reveal>
+                <b>Contrast, measured</b>
+                <p>Every text element on every page is measured against its computed background by a script in the repository, and the build is not published while anything reads below AA. That found and fixed eleven real shortfalls, including our own accent blue. Text is never an image.</p>
+              </div>
+              <div data-reveal>
+                <b>Zoom</b>
+                <p>Readable at 200% zoom and at 320 CSS pixels wide. Nothing is pinned to a fixed pixel height that clips when text grows.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band band--rule sec" id="shortfalls">
+        <div class="wrap">
+          <div class="col">
+            <div class="spread">
+              <div class="sec-head">
+                <p class="kicker" data-reveal>Known shortfalls</p>
+                <h2 class="title" data-reveal>The list we have not finished.</h2>
+              </div>
+              <div class="prose">
+                <p class="body" data-reveal>
+                  A statement that claims no problems is a statement nobody checked. These
+                  are the ones we know about, and each is a real item of work rather than a
+                  disclaimer.
+                </p>
+              </div>
+            </div>
+            <div class="ledger">
+              <div data-reveal>
+                <b>Nav panels on hover</b>
+                <p>The panels open on hover as well as focus. On some touch and switch-access setups the hover state is awkward. Every link inside them also appears in the footer, which is plain and always visible.</p>
+              </div>
+              <div data-reveal>
+                <b>The mobile menu needs JavaScript</b>
+                <p>On a narrow screen with scripting off, the menu button does nothing and navigation falls to the footer. It works, but it is worse than it should be.</p>
+              </div>
+              <div data-reveal>
+                <b>The object costs power</b>
+                <p>The WebGL object on the opening screen is decorative and hidden from assistive technology, but it still uses the GPU. It is removed under reduced-motion; it is not yet removed under a low-power hint.</p>
+              </div>
+              <div data-reveal>
+                <b>No audit, no formal testing report</b>
+                <p>Screen reader testing has been done by us, not by daily users of one. That is a gap we can only close by paying somebody who knows more than we do.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band band--rule sec" id="report">
+        <div class="wrap">
+          <div class="col">
+            <div class="spread">
+              <div class="sec-head">
+                <p class="kicker" data-reveal>Report a barrier</p>
+                <h2 class="title" data-reveal>Tell us what stopped you.</h2>
+              </div>
+              <div class="prose">
+                <p class="body" data-reveal>
+                  Write to <a href="mailto:privacy@radice.ai">privacy@radice.ai</a> with the
+                  page, what you were trying to do, and what got in the way. We will
+                  acknowledge within five working days and tell you either when it is fixed
+                  or why it is hard.
+                </p>
+                <p class="body" data-reveal>
+                  If you need something on this site in another format, ask and we will send
+                  it. This statement was last reviewed in August 2026.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band band--rule close-cta">
+        <div class="wrap">
+          <div class="col">
+            <p class="kicker" data-reveal>Next</p>
+            <h2 class="display" data-reveal>What we do with data, in plain sentences.</h2>
+            <a class="btn btn--ink" data-reveal href="/privacy/">
+              <span>Privacy and cookies</span>
+              <i><svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></i>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- chrome:foot -->
+    <footer class="foot band">
+      <div class="wrap">
+        <div class="foot-top">
+          <div>
+            <a class="wordmark" href="/"><i></i>Radice</a>
+            <p class="foot-claim">Sovereign AI for professional firms and the state.<br />The file does not travel.</p>
+          </div>
+          <a class="btn btn--line" href="/contact/">
+            <span>Request a briefing</span>
+            <i><svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></i>
+          </a>
+        </div>
+        <div class="foot-grid">
+          <div class="foot-col">
+            <h4>The offer</h4>
+            <a href="/two-weeks/">Two weeks</a>
+            <a href="/two-weeks/#fortnight">The fortnight</a>
+            <a href="/two-weeks/#terms">Terms</a>
+            <a href="/kit/">The kit</a>
+            <a href="/kit/#stack">The stack</a>
+            <a href="/kit/#limits">Limits</a>
+          </div>
+          <div class="foot-col">
+            <h4>Who it's for</h4>
+            <a href="/law/">Law firms</a>
+            <a href="/law/#shape">The shape</a>
+            <a href="/institutions/">Institutions</a>
+            <a href="/institutions/#position">Position</a>
+            <a href="/#doors">Two doors</a>
+            <a href="/#missions">Missions</a>
+          </div>
+          <div class="foot-col">
+            <h4>Trust</h4>
+            <a href="/how-we-work/">How we work</a>
+            <a href="/how-we-work/#undertakings">The undertakings</a>
+            <a href="/how-we-work/#this-site">This site</a>
+            <a href="/#what-you-own">What you own</a>
+            <a href="/#premise">The premise</a>
+          </div>
+          <div class="foot-col">
+            <h4>Company</h4>
+            <a href="/about/">About</a>
+            <a href="/contact/">Contact</a>
+            <a href="/legal/">Legal notice</a>
+            <a href="/privacy/">Privacy and cookies</a>
+            <a href="/accessibility/" aria-current="page">Accessibility</a>
+          </div>
+        </div>
+        <div class="foot-runs">
+          <h4>Where it runs</h4>
+          <ul class="foot-facts">
+            <li>Hardware the firm already owns</li>
+            <li>Or a European tenant in its name</li>
+            <li>Never a shared cloud of many firms</li>
+            <li>Their keys, their bill, their jurisdiction</li>
+          </ul>
+        </div>
+        <div class="foot-end">
+          <span>© 2026 Radice</span>
+          <a data-briefing href="mailto:shailesh.tripathi003@gmail.com?subject=Briefing%20request">shailesh.tripathi003@gmail.com</a>
+        </div>
+      </div>
+    </footer>
+    <!-- /chrome:foot -->
+
+    <!-- chrome:consent -->
+    <!--
+      Removed at runtime when config.js has no analytics host, because there is
+      then nothing to consent to. Nothing loads before a choice is made, and
+      Decline is a real button of equal weight.
+    -->
+    <aside class="consent" role="dialog" aria-modal="false" aria-label="Analytics consent">
+      <div class="consent-inner">
+        <div>
+          <p class="mega-label">Measurement</p>
+          <p>
+            We would like to count page views on our own server, without cookies and
+            without sending anything to a third party. Decline and nothing is
+            recorded. <a href="/privacy/">What this means</a>
+          </p>
+        </div>
+        <div class="consent-acts">
+          <button class="btn btn--line" type="button" data-consent-decline>
+            <span>Decline</span>
+          </button>
+          <button class="btn" type="button" data-consent-accept>
+            <span>Accept</span>
+            <i><svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M8 1l4 4-4 4M12 5H0" stroke="currentColor" stroke-width="1.3" /></svg></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+    <!-- /chrome:consent -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
