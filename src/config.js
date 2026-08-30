@@ -5,7 +5,7 @@
  */
 
 /** Canonical origin. Must match where the site is actually served. */
-export const ORIGIN = "https://radiceai.github.io";
+export const ORIGIN = "https://shaileshai.github.io/RadiceAI.github.io";
 
 /*
  * Deliverable-while-testing address. This one is rendered publicly — the footer

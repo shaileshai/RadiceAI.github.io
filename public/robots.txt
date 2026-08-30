@@ -11,4 +11,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://radiceai.github.io/sitemap.xml
+Sitemap: https://shaileshai.github.io/RadiceAI.github.io/sitemap.xml
