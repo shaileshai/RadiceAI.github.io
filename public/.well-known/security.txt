@@ -1,5 +1,5 @@
 Contact: mailto:security@radice.ai
-Expires: 2027-08-30T21:48:55Z
+Expires: 2027-08-30T21:51:29Z
 Preferred-Languages: en
 Canonical: https://radiceai.github.io/.well-known/security.txt
 Policy: https://radiceai.github.io/legal/#security

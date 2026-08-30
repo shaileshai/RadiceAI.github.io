@@ -547,7 +547,7 @@ for (const p of PAGES) {
   s = swap(
     s,
     p.file,
-    /<!-- chrome:consent -->[\s\S]*?<!-- \/chrome:consent -->/,
+    /<!-- chrome:consent -->[\s\S]*?<!-- \/chrome:consent -->\n?/,
     /(?=\n\s*<script type="module")/,
     `${consent()}\n`,
   );
